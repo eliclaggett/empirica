@@ -232,19 +232,21 @@ function useAllReady() {
     return false;
   }
 
-  const treatment = game.get("treatment") as { playerCount: number };
-
-  const playerCount = treatment!["playerCount"];
-
-  if (players.length < playerCount) {
-    return false;
-  }
-
+  // Eli: Allow fewer players than specified in the treatment
+  // Old code -----------------------------------------------
+  // const treatment = game.get("treatment") as { playerCount: number };
+  // const playerCount = treatment!["playerCount"];
+  // if (players.length < playerCount) {
+  //   return false;
+  // }
+  // --------------------------------------------------------
+  // New code -----------------------------------------------
   for (const p of players) {
-    if (!p.game || !p.round || !p.stage) {
+    if (!p.get('ended') && (!p.game || !p.round || !p.stage)) {
       return false;
     }
   }
+  // --------------------------------------------------------
 
   return true;
 }
