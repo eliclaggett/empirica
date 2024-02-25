@@ -238,14 +238,14 @@ function useAllReady() {
     return false;
   }
 
-  const playerCount = game.get("actualPlayerCount") as number | undefined;
+  // const playerCount = game.get("actualPlayerCount") as number | undefined;
 
-  if (playerCount !== undefined && players.length < playerCount) {
-    return false;
-  }
+  // if (playerCount !== undefined && players.length < playerCount) {
+  //   return false;
+  // }
 
   for (const p of players) {
-    if (!p.game || !p.round || !p.stage) {
+    if (!p.get('ended') && (!p.game || !p.round || !p.stage)) {
       return false;
     }
   }
