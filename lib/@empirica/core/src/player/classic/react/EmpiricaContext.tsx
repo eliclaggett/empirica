@@ -92,6 +92,7 @@ export function EmpiricaContext({
     !globals ||
     (hasPlayer && (!participantConnected || !player || game === undefined))
   ) {
+    console.log('no globals???');
     return <LoadingComp />;
   }
 
@@ -114,6 +115,7 @@ export function EmpiricaContext({
   }
 
   if (!player || (!unmanagedGame && !game)) {
+    console.log('no player or no game???');
     return <LoadingComp />;
   }
 
@@ -129,6 +131,7 @@ export function EmpiricaContext({
 
   if (game && game.hasEnded) {
     if (!player.get("ended")) {
+      console.log('not player ended???');
       return <LoadingComp />;
     }
 
@@ -175,6 +178,7 @@ function EmpiricaInnerContext({
     if (unmanagedGame) {
       return <>{children}</>;
     } else {
+      console.log('no game?');
       return <LoadingComp />;
     }
   }
@@ -185,6 +189,7 @@ function EmpiricaInnerContext({
 
   if (game.hasEnded) {
     if (!player?.get("ended")) {
+      console.log('game ended but not player?');
       return <LoadingComp />;
     }
 
@@ -194,7 +199,7 @@ function EmpiricaInnerContext({
   if (unmanagedGame || allReady) {
     return <>{children}</>;
   }
-
+  console.log('loading for no reason?');
   return <LoadingComp />;
 }
 
@@ -208,6 +213,7 @@ function Exit({
   const gameReady = useGameReady();
 
   if (!gameReady) {
+    console.log('not game ready???');
     return <Loading />;
   }
 
@@ -238,14 +244,14 @@ function useAllReady() {
     return false;
   }
 
-  const playerCount = game.get("actualPlayerCount") as number | undefined;
+  // const playerCount = game.get("actualPlayerCount") as number | undefined;
 
-  if (playerCount !== undefined && players.length < playerCount) {
-    return false;
-  }
+  // if (playerCount !== undefined && players.length < playerCount) {
+  //   return false;
+  // }
 
   for (const p of players) {
-    if (!p.game || !p.round || !p.stage) {
+    if (!p.get('ended') && (!p.game || !p.round || !p.stage)) {
       return false;
     }
   }
@@ -269,17 +275,24 @@ function useGameReady() {
   }
 
   if (!player || !players || !game || !player.game) {
-    return false;
+
+    console.log ('gameReady: who knows');
+    console.log(!player); //false
+    console.log(!players); //true
+    console.log(!game); //false
+    console.log ('---');
+    return true; // originally false
   }
 
-  const playerCount = game.get("actualPlayerCount") as number | undefined;
+  // const playerCount = game.get("actualPlayerCount") as number | undefined;
 
-  if (playerCount !== undefined && players.length < playerCount) {
-    return false;
-  }
+  // if (playerCount !== undefined && players.length < playerCount) {
+  //   return false;
+  // }
 
   for (const p of players) {
     if (!p.game) {
+      console.log ('gameReady: no game for player');
       return false;
     }
   }

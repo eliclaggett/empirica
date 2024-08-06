@@ -34,53 +34,53 @@ func Serve(ctx context.Context, config *empirica.Config, in string, clean, devMo
 		log.Fatal().Err(err).Msg("invalid config")
 	}
 
-	if b, err := build.FindCurrentBinaryVersion(); err != nil {
-		if !errors.Is(err, build.ErrNoInstalledVersions) {
-			log.Fatal().Err(err).Msg("failed to find bundle version")
-		}
-	} else if b.Version != build.Current().Version && os.Getenv(build.BuildSelectionEnvVar) == "" {
-		// If we are not running the correct version, restart with the correct
-		// version. The new version will automatically be picked up on restart since
-		// the version in the bundle will have already been exported to the
-		// .empirica/release file in the current dir.
-		log.Info().
-			Str("from", build.Current().Version).
-			Str("to", b.Version).
-			Msg("serve: switching to empirica version in bundle")
+	// if b, err := build.FindCurrentBinaryVersion(); err != nil {
+	// 	if !errors.Is(err, build.ErrNoInstalledVersions) {
+	// 		log.Fatal().Err(err).Msg("failed to find bundle version")
+	// 	}
+	// } else if b.Version != build.Current().Version && os.Getenv(build.BuildSelectionEnvVar) == "" {
+	// 	// If we are not running the correct version, restart with the correct
+	// 	// version. The new version will automatically be picked up on restart since
+	// 	// the version in the bundle will have already been exported to the
+	// 	// .empirica/release file in the current dir.
+	// 	log.Info().
+	// 		Str("from", build.Current().Version).
+	// 		Str("to", b.Version).
+	// 		Msg("serve: switching to empirica version in bundle")
 
-		if os.Getenv("EMPIRICA_SUBPROC") != "" {
-			log.Warn().Msg("serve: failed to run correct version of bundle, exiting...")
+	// 	if os.Getenv("EMPIRICA_SUBPROC") != "" {
+	// 		log.Warn().Msg("serve: failed to run correct version of bundle, exiting...")
 
-			return nil
-		}
+	// 		return nil
+	// 	}
 
-		c := exec.CommandContext(ctx, "empirica", os.Args[1:]...)
+	// 	c := exec.CommandContext(ctx, "empirica", os.Args[1:]...)
 
-		c.Stderr = os.Stderr
-		c.Stdout = os.Stdout
+	// 	c.Stderr = os.Stderr
+	// 	c.Stdout = os.Stdout
 
-		c.Env = append(os.Environ(), "EMPIRICA_SUBPROC=1")
+	// 	c.Env = append(os.Environ(), "EMPIRICA_SUBPROC=1")
 
-		if err := c.Start(); err != nil {
-			var er *exec.ExitError
-			if errors.As(err, &er) {
-				os.Exit(er.ExitCode())
-			}
+	// 	if err := c.Start(); err != nil {
+	// 		var er *exec.ExitError
+	// 		if errors.As(err, &er) {
+	// 			os.Exit(er.ExitCode())
+	// 		}
 
-			return errors.Wrap(err, "failed to start")
-		}
+	// 		return errors.Wrap(err, "failed to start")
+	// 	}
 
-		if err := c.Wait(); err != nil {
-			var er *exec.ExitError
-			if errors.As(err, &er) {
-				os.Exit(er.ExitCode())
-			}
+	// 	if err := c.Wait(); err != nil {
+	// 		var er *exec.ExitError
+	// 		if errors.As(err, &er) {
+	// 			os.Exit(er.ExitCode())
+	// 		}
 
-			return errors.Wrap(err, "failed to start")
-		}
+	// 		return errors.Wrap(err, "failed to start")
+	// 	}
 
-		return nil
-	}
+	// 	return nil
+	// }
 
 	go func(ctx context.Context) {
 		parts := strings.Split(conf.Callbacks.ServeCmd, " ")
@@ -94,7 +94,7 @@ func Serve(ctx context.Context, config *empirica.Config, in string, clean, devMo
 		cmd := parts[0]
 		if len(parts) > 1 {
 			if parts[0] == "npm" {
-				cmd = "empirica"
+				cmd = "emp"
 				args = parts
 			} else {
 				args = parts[1:]
