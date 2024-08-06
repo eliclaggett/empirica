@@ -7,6 +7,7 @@ export function Lobby() {
   const player = usePlayer();
 
   if (!player) {
+    console.log('no player in lobby???');
     return <Loading />;
   }
 
@@ -14,7 +15,7 @@ export function Lobby() {
 
   if (!treatment || !treatment.playerCount) {
     warn("lobby: no treatment found on player");
-
+    console.log('in lobby no treatment???');
     return <Loading />;
   }
 
