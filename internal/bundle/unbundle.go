@@ -172,6 +172,23 @@ func Unbundle(_ context.Context, config *empirica.Config, in string, clean, devM
 		decompressor = zstdReader
 	}
 
+	// Add dotenv file
+	// Create parent dir as needed.
+	if _, err := os.Stat(dir); err != nil {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return "", nil, errors.Wrap(err, "create parent dir")
+		}
+	}
+	log.Info().
+		Str("target", dir).
+		Msg("unbundle: adding dotenv")
+	wd, err := os.Getwd()
+	src := filepath.Join(wd, ".env")
+	dst := path.Join(dir, ".env")
+	if err := cp.Copy(src, dst, cp.Options{Sync: true}); err != nil {
+		return "", nil, errors.Wrapf(err, "copy %s", settings.EmpiricaDir)
+	}
+
 	tr := tar.NewReader(decompressor)
 
 	for {

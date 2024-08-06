@@ -56,6 +56,9 @@ func Start(ctx context.Context, config *Config, usingConfigFile bool) (*Runner, 
 	termui := term.New(config.Log.Level == "debug" || config.Log.Level == "trace")
 	ctx = term.SetContext(ctx, termui)
 	comp := termui.Add("tajriba")
+	termui.SetPort(config.Server.Addr)
+	termui.SetProxyAddr(config.Server.ProxyAddr)
+	termui.SetTajribaAddr(config.Tajriba.Server.Addr)
 
 	ctx, r.taj, schema, err = tajriba.Setup(ctx, config.Tajriba, usingConfigFile)
 	if err != nil {

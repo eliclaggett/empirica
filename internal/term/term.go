@@ -14,11 +14,14 @@ import (
 )
 
 type UI struct {
-	comps    []*Component
-	debug    bool
-	allReady bool
-	updates  chan update
-	close    chan bool
+	comps       []*Component
+	debug       bool
+	allReady    bool
+	updates     chan update
+	close       chan bool
+	port        string
+	proxyAddr   string
+	tajribaAddr string
 
 	deadlock.Mutex
 }
@@ -167,10 +170,15 @@ func (ui *UI) printClean(printSeperator bool) {
 	// 	buildStr = build.Version
 	// }
 
+	var serverStr = "http://localhost" + ui.port
+	var proxyStr = ui.proxyAddr
+	var tajribaStr = ui.tajribaAddr
 	strs = append(strs,
 		lineHeader(lipgloss.JoinHorizontal(lipgloss.Top, highlightStr("Empirica"), subtleStr(" ("+buildStr+") server running:"))),
-		urlLine(lipgloss.JoinHorizontal(lipgloss.Top, urlHeader("Player  "), subtleStr("http://localhost:3000"))),
-		urlLine(lipgloss.JoinHorizontal(lipgloss.Top, urlHeader("Admin   "), subtleStr("http://localhost:3000/admin"))),
+		urlLine(lipgloss.JoinHorizontal(lipgloss.Top, urlHeader("Player  "), subtleStr(serverStr))),
+		urlLine(lipgloss.JoinHorizontal(lipgloss.Top, urlHeader("Admin   "), subtleStr(serverStr+"/admin"))),
+		urlLine(lipgloss.JoinHorizontal(lipgloss.Top, subtleStr("Proxy   "), subtleStr(proxyStr))),
+		urlLine(lipgloss.JoinHorizontal(lipgloss.Top, subtleStr("Tajriba "), subtleStr(tajribaStr))),
 	)
 
 	lists := list.Render(
@@ -259,6 +267,15 @@ func (ui *UI) process(update update) {
 	}
 }
 
+func (ui *UI) SetPort(port string) {
+	ui.port = port
+}
+func (ui *UI) SetProxyAddr(proxy string) {
+	ui.proxyAddr = proxy
+}
+func (ui *UI) SetTajribaAddr(addr string) {
+	ui.tajribaAddr = addr
+}
 func (ui *UI) Add(name string) *Component {
 	comp := &Component{
 		Name:    name,

@@ -15,6 +15,7 @@ export function Stage() {
 
   if (player.stage.get("submit")) {
     if (players.length === 1) {
+      console.log('player length is 1????');
       return <Loading />;
     }
 
