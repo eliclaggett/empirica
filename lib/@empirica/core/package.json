@@ -198,6 +198,7 @@
     "async-mutex": "0.4.1",
     "rxjs": "7.5.5",
     "stream-buffers": "3.0.2",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "zod": "3.17.3"
   },
   "peerDependencies": {
